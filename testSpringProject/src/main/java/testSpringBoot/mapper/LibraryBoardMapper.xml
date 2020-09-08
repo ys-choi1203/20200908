@@ -14,4 +14,13 @@
 		#{boardSubject},#{boardContent},sysdate,#{ipAddr},
 		0,#{originalFileName},#{storeFileName},#{fileSize})
 	</insert>
+	
+	<select id = "getLibraryBoardList" resultMap="baseLibrary">
+		select *
+			from(select rownum rn, <include refid="basecolumn" />
+				from(select <include refid="basecolumn" />
+					from LIBRARYBOARD
+					order by board_date desc))
+			where rn between #{startPage} and #{endPage}
+	</select>
 </mapper>	
