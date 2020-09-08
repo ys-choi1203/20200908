@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,12 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 import testSpringBoot.command.AuthInfo;
 import testSpringBoot.command.LibraryBoardCommand;
 import testSpringBoot.domain.LibraryBoardDTO;
+import testSpringBoot.mapper.LibraryBoardMapper;
 
 @Component
 @Service
 public class LibraryBoardService {
-
-	public String writePro(LibraryBoardCommand libraryBoardCommand, HttpServletRequest request) {
+	@Autowired
+	LibraryBoardMapper libraryBoardMapper;
+	
+	public String writePro(LibraryBoardCommand libraryBoardCommand,
+						HttpServletRequest request) throws Exception{
+		 String location = "";
+		 
 		 LibraryBoardDTO libraryBoardDTO = new LibraryBoardDTO();
 		 
 		 libraryBoardDTO.setBoardContent(libraryBoardCommand.getBoardContent());
@@ -35,7 +42,6 @@ public class LibraryBoardService {
 		 String originalTotal = "";
 		 String storeTotal = "";
 		 String fileSizeTotal = "";
-		 String location = "";
 		 String PATH = "/static/lib_Board/upload";
 		 String filePath = request.getServletContext().getRealPath(PATH);
 		 System.out.println("libBoardServiece 경로 : "+ filePath);
@@ -58,13 +64,12 @@ public class LibraryBoardService {
 			} catch (Exception e) {
 				location = "thymeleaf/lib_Board/lib_board_write";
 				e.printStackTrace();
-			}
-			 
-			 libraryBoardDTO.setOriginalFileName(originalTotal);
-			 libraryBoardDTO.setStoreFileName(storeTotal);
-			 libraryBoardDTO.setFileSize(fileSizeTotal);
+			}	 
 		 }
-		 
+		 libraryBoardDTO.setOriginalFileName(originalTotal);
+		 libraryBoardDTO.setStoreFileName(storeTotal);
+		 libraryBoardDTO.setFileSize(fileSizeTotal);
+		 libraryBoardMapper.libraryInsert(libraryBoardDTO);
 		 // DB전송
 		 location = "redirect:/libraryBoard/library";
 		 return location;
