@@ -45,9 +45,9 @@ public class LibraryController {
 		}
 		
 		// 리스트 페이지로 가기 전에 먼저 DB에 저장
-		libraryBoardService.writePro(libraryBoardCommand, request); 
+		String location = libraryBoardService.writePro(libraryBoardCommand, request); 
 		// write페이지가 실행된 후에는 리스트 페이지로 가야한다.
-		return "redirect:/libraryBoard/library";
+		return location;
 		
 	}
 }
