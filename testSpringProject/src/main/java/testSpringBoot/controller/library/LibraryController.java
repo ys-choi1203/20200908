@@ -1,6 +1,8 @@
 package testSpringBoot.controller.library;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,11 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import testSpringBoot.command.LibraryBoardCommand;
+import testSpringBoot.controller.FileDownLoad;
+import testSpringBoot.service.libraryBoard.LibraryBoardDetailService;
 import testSpringBoot.service.libraryBoard.LibraryBoardListService;
 import testSpringBoot.service.libraryBoard.LibraryBoardService;
 
@@ -23,6 +28,10 @@ public class LibraryController {
 	LibraryBoardService libraryBoardService;
 	@Autowired
 	LibraryBoardListService libraryBoardListService;
+	@Autowired
+	LibraryBoardDetailService libraryBoardDetailService;
+	@Autowired
+	FileDownLoad fileDownLoad;
 	
 	// command객체가 필요한 곳에 model로 전달
 	@ModelAttribute
@@ -57,6 +66,20 @@ public class LibraryController {
 		String location = libraryBoardService.writePro(libraryBoardCommand, request); 
 		// write페이지가 실행된 후에는 리스트 페이지로 가야한다.
 		return location;
-		
+	}
+	
+	// localhost:9090/libraryBoard/libBoardDetail/289
+	@RequestMapping("libBoardDetail/{id}")
+	public String libBoardDetail(@PathVariable(value = "id") String boardNum,
+								Model model, HttpSession session) throws Exception{
+		libraryBoardDetailService.libBoardDetail(boardNum, session, model);
+		return "thymeleaf/lib_Board/lib_board_view";
+	}
+	
+	@RequestMapping("fileDown")
+	public void fileDownLoad(@RequestParam(value = "file") String fileName,
+							HttpServletResponse response ,HttpServletRequest request) throws Exception{
+		String path = "/static/lib_board/upload";
+		fileDownLoad.fileDownLoad(path, fileName, request, response);
 	}
 }

@@ -14,7 +14,7 @@
 	
 	<tr>
 		<td height="16">제 목&nbsp;&nbsp;</td>
-		<td >[[${list[0].boardSubject }]]</span></td>
+		<td >[[${dto.boardSubject }]]</span></td>
 	</tr>
 	<tr bgcolor="cccccc">
 		<td colspan="2" style="height:1px;">
@@ -26,7 +26,8 @@
 			<table border=0 width=490 height=250 >
 				<tr>
 					<td valign=top>
-					<span th:utext="${#strings.replace(list[0].boardContent, T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></span>
+					<span th:utext="${#strings.replace(dto.boardContent, T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></span>
+																					<!-- thymeleaf를 사용할 시 \n을 br태그로 변경하겠다라는 의미 -->
 					</td>
 				</tr>
 			</table>
@@ -36,10 +37,24 @@
 	<tr>
 		<td>파일</td>
 		<td>
+		<!-- FileName : List<FileName> -->
 		<div th:each="file :  ${fileList}" >
+		<!--파일 다운로드를 하기 위한 링크 -->
+		<!-- <a href="libraryBoard/${file.storeFileName}> 파일 다운로드 </a>"로 설정하여서 파일을 다운로드했었다.
+				html에서는 EL(${})을 사용할 수 없다  -->
+		<!-- /libraryBoard/fileDown/file=${file.storeFileName} 처럼 작성함 -->
+		<!-- PathValiable 
+		<a href="/libraryBoard/fileDown/${file.storeFileName}"/> 
 		<a th:href="@{/libraryBoard/fileDown/{file}(file=${file.storeFileName+'`'+file.originalfileName})}" >
 			[[${file.originalfileName }]]</a>
+		&nbsp;&nbsp; / &nbsp;&nbsp;[[${file.fileSize }]]Byte -->
+		
+		<!-- 쿼리스트링 방식  -->
+		<a href="/libraryBoard/fileDown?${file.storeFileName}"/>
+		<a th:href="@{/libraryBoard/fileDown(file=${file.storeFileName+'`'+file.originalfileName})}" >
+			[[${file.originalfileName }]]</a>
 		&nbsp;&nbsp; / &nbsp;&nbsp;[[${file.fileSize }]]Byte
+		
 		</div>
 		</td>	
 			
@@ -52,10 +67,10 @@
 	<tr align="center" valign="middle">
 		<td colspan="5">
 			<font size=2>
-			<a th:href="@{/libraryBoard/libBoardModify(boardNum=${list[0].boardNum}) }">
+			<a th:href="@{/libraryBoard/libBoardModify(boardNum=${dto.boardNum}) }">
 			[수정]
 			</a>&nbsp;&nbsp;
-			<a th:href="@{/libraryBoard/libBoardDel(boardNum=${list[0].boardNum}) }">
+			<a th:href="@{/libraryBoard/libBoardDel(boardNum=${dto.boardNum}) }">
 			[삭제]
 			</a>&nbsp;&nbsp;
 			<a th:href="@{/libraryBoard/library}">[목록]</a>&nbsp;&nbsp;
