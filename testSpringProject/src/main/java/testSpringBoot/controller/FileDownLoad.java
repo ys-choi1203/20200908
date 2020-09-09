@@ -20,17 +20,25 @@ public class FileDownLoad {
 		String originalFileName = fileName.split("`")[1];
 		String storeFileName = fileName.split("`")[0];
 		
+		System.out.print(originalFileName);
+		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/octet-stream; charset=utf-8");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + originalFileName + "\";");
         response.setHeader("Content-Transfer-Encoding", "binary");
         File file = new File(RealPath + "/" + storeFileName);
-        ServletOutputStream out1 = null; 
+        
+        // 웹브라우저쪽으로 output하기 위해서 사용
+        ServletOutputStream out1 = null;
+        // 시스템에 있는 파일을 가져오기위한 객체
         FileInputStream fis = null;
 		try {
+			// 웹브라우저에 전송할 수 있게 정볼르 가져옴
 			out1 = response.getOutputStream();
 			fis = new FileInputStream(file);
-	        FileCopyUtils.copy(fis, out1);
-	        response.flushBuffer();
+			// fis ---> out1에 복사	
+			// fis가 가지고 있는 파일을 out1에 의해 웹브라우저에 전송
+	        FileCopyUtils.copy(fis, out1);	// 전송
+	        response.flushBuffer();	//response에 의해 전송이 된후 response버퍼를 지움
 	        out1.flush();
 	        out1.close();
 		} catch (IOException e1) {

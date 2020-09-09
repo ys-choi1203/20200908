@@ -27,7 +27,6 @@
 				<tr>
 					<td valign=top>
 					<span th:utext="${#strings.replace(dto.boardContent, T(System).getProperty('line.separator'), '&lt;br /&gt;')}"></span>
-																					<!-- thymeleaf를 사용할 시 \n을 br태그로 변경하겠다라는 의미 -->
 					</td>
 				</tr>
 			</table>
@@ -37,20 +36,19 @@
 	<tr>
 		<td>파일</td>
 		<td>
-		<!-- FileName : List<FileName> -->
+		<!--        FileName  :   List<FileName>  -->
 		<div th:each="file :  ${fileList}" >
-		<!--파일 다운로드를 하기 위한 링크 -->
-		<!-- <a href="libraryBoard/${file.storeFileName}> 파일 다운로드 </a>"로 설정하여서 파일을 다운로드했었다.
-				html에서는 EL(${})을 사용할 수 없다  -->
-		<!-- /libraryBoard/fileDown/file=${file.storeFileName} 처럼 작성함 -->
-		<!-- PathValiable 
-		<a href="/libraryBoard/fileDown/${file.storeFileName}"/> 
-		<a th:href="@{/libraryBoard/fileDown/{file}(file=${file.storeFileName+'`'+file.originalfileName})}" >
-			[[${file.originalfileName }]]</a>
-		&nbsp;&nbsp; / &nbsp;&nbsp;[[${file.fileSize }]]Byte -->
-		
-		<!-- 쿼리스트링 방식  -->
-		<a href="/libraryBoard/fileDown?${file.storeFileName}"/>
+		<!-- 파일 다운로드를 하기 위한 링 -->
+		<!-- <a href= "/libraryBoard/${file.storeFileName}> 파일 다운로드 </a>" -->
+		<!-- 
+			html에서는 EL(${})을 사용할 수 없다 -->
+		<!-- pathValiable
+		<a href="/libraryBoard/fileDown/${file.storeFileName}"/> -->
+		<!-- <a th:href="@{/libraryBoard/fileDown/{file}(file=${file.storeFileName+'`'+file.originalfileName})}" >
+			[[${file.originalfileName }]]</a> -->
+			
+		<!-- 쿼리스트링 방식 -->
+		<a href="/libraryBoard/fileDown?file=${file.storeFileName}"/>
 		<a th:href="@{/libraryBoard/fileDown(file=${file.storeFileName+'`'+file.originalfileName})}" >
 			[[${file.originalfileName }]]</a>
 		&nbsp;&nbsp; / &nbsp;&nbsp;[[${file.fileSize }]]Byte
