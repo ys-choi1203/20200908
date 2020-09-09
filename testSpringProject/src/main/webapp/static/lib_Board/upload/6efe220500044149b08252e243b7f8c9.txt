@@ -1,9 +1,0 @@
-select dbms_xdb.gethttpport() from dual;
-
-exec dbms_xdb.sethttpport(9000);
-
-create user 사용자계정 identified by 비밀번호;
-예)create user smrit identified by oracle;
-
-grant connect, resource, dba  to 사용자계정;
-예)grant connect, resource, dba  to smrit;

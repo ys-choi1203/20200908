@@ -22,6 +22,7 @@ public class LibraryBoardDetailService {
 	LibraryBoardMapper libraryBoardMapper;
 	
 	public void libBoardDetail(String boardNum, HttpSession session, Model model) throws Exception{
+		libraryBoardMapper.updateReadCount(boardNum);
 		StartEndPageDTO startEndPageDTO = new StartEndPageDTO(1L, 1L, null, boardNum);
 		LibraryBoardDTO dto = 
 						libraryBoardMapper.getLibraryBoardList(startEndPageDTO).get(0);
@@ -35,12 +36,13 @@ public class LibraryBoardDetailService {
 		List<FileName> fileList = new ArrayList<FileName>();
 		int i = 0;
 		for(String file : oriFile ) {
+			System.out.print(file);
 			FileName fileName = new FileName(file, strFile[i],fileSize[i] );
 			fileList.add(fileName);
 			i++;
 		}
 		model.addAttribute("fileList", fileList);
-		model.addAttribute("dto", dto);
+		model.addAttribute("dto",dto);
 	}
 
 }
