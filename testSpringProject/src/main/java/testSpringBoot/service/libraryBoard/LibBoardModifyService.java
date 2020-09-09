@@ -29,7 +29,6 @@ public class LibBoardModifyService {
 	LibraryBoardMapper libraryBoardMapper;
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	
 	public String libBoardModify(LibraryBoardCommand libraryBoardCommand,	
 			HttpSession session, Model model)  throws Exception{
 		LibraryBoardDTO dto = new LibraryBoardDTO();
@@ -62,9 +61,12 @@ public class LibBoardModifyService {
 		String path1 = "/static/lib_Board/upload";
 		String filePath = 
 				session.getServletContext().getRealPath(path1);
+		// filePath =  "c:/Users/soongmoorhee/Downloads/eclipse-workspace2/Soldesk503_01  ;         
+		// filePath += "/testSpringBoot/src/main/resources/templates/thymeleaf";
+		// filePath += "/lib_Board/upload";
 		
 		// insert할 때와 로직이 같다. 
-		// libraryBoardCommand에 있는 report로 파일정보를 가져오기 
+		// libraryBoardCommand에 있는 report로 파일정보를 가져오기   
 		for(MultipartFile mf : libraryBoardCommand.getReport()) {
 			String original = mf.getOriginalFilename();
 			String originalFileExtension = 
@@ -80,29 +82,30 @@ public class LibBoardModifyService {
 				mf.transferTo(file);
 			}catch(Exception e) {e.printStackTrace();}
 		}
-		dto.setOriginalFileName(originalTotal + lib.getOriginalFileName());
-		dto.setStoreFileName(storeTotal + lib.getStoreFileName());
-		dto.setFileSize(fileSizeTotal + lib.getFileSize());
-		// 수정을 하기 위해서는 commend에 있는 비밀번호와 디비에 저장된 비밀번호가 같아야한다.
-		if(passwordEncoder.matches(libraryBoardCommand.getBoardPass(), lib.getBoardPass())) {
-			// 같으면 update를한다.
+		dto.setOriginalFileName(
+				originalTotal+lib.getOriginalFileName());
+		dto.setStoreFileName(
+				storeTotal+lib.getStoreFileName());
+		dto.setFileSize(fileSizeTotal+lib.getFileSize());
+		// 수정을 하기 위해서는  commend 에 있는 비밀번호와 디비에 저장된 비밀번호가 같아야 한다.
+		if(passwordEncoder.matches(libraryBoardCommand.getBoardPass(), 
+				lib.getBoardPass())) {
+			// 같으면 update  를 한다 .
 			libraryBoardMapper.libraryUpdate(dto);
-			// 그리고 session에 있는 파일정보를 삭제
+			// 그리고 session에 있는  파일 정보를 삭제 하자.
 			if(list != null) {
-				for (FileName fi : list) {
-					file = new File(filePath + "/" + fi.getStoreFileName().replace("`", ""));
-					if(file.exists()) {
-						file.delete();
-					}
+				for(FileName fi : list ) {
+					file = new File(filePath + "/" 
+									+ fi.getStoreFileName().replace("`", ""));
+					if(file.exists()) file.delete();
 				}
-				// session삭제
+				// session 삭제 
 				session.removeAttribute("fileList");
 			}
-			// 디테일 페이지로 이동
-			return "redirect:/libraryBoard/libBoardDetail/" + lib.getBoardNum();
+			// 디테일 페이지로 이동 
+			return "redirect:/libraryBoard/libBoardDetail/"+lib.getBoardNum();
 		}
-		// 비밀번호가 일지하지 않으면 수정페이지로 이동
-		return "thymeleaf/lib_Board/lib_board/modify";
+		// 비밀번호가 일치하지 않으면 수정 페이지로 이동 
+		return "thymeleaf/lib_Board/lib_board_modify";
 	}
-
 }

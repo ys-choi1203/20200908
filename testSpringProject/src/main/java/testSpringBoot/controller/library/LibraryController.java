@@ -99,7 +99,7 @@ public class LibraryController {
 	
 	@RequestMapping("fileDel")
 	public String fileDel(FileName fileName, HttpSession session, Model model) {
-		fileDelService.fileSessonAdd(fileName, session, model);
+		fileDelService.fileSessionAdd(fileName, session, model);
 		return "thymeleaf/lib_Board/delPage";
 	}
 	

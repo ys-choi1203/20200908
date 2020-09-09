@@ -3,6 +3,8 @@ package testSpringBoot.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,11 @@ public class FileDownLoad {
 		String originalFileName = fileName.split("`")[1];
 		String storeFileName = fileName.split("`")[0];
 		
-		System.out.print(originalFileName);
+		try {
+			originalFileName = URLEncoder.encode(originalFileName,"UTF-8");
+		} catch (UnsupportedEncodingException e2) {
+			e2.printStackTrace();
+		}
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/octet-stream; charset=utf-8");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + originalFileName + "\";");
