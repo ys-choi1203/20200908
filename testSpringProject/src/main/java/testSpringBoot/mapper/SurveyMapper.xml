@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="testSpringBoot.mapper.SurveyMapper">
+	<sql id="maxNum">
+		select nvl(max(question_num),0) + 1
+		from question 
+		where user_id = #{userId}
+	</sql>
+	
+	<!-- 질문을 입력하기 위한 쿼리문 -->
+	<insert id="questionInsert" parameterType="testSpringBoot.domain.QuestionDTO">
+		insert into question(user_id, question_num, question_title)
+		values(#{userId}, (<include refid="maxNum" />), #{questionTitle})
+	</insert>
+	
+	<select id="questionNum" parameterType="string" resultType="int">
+		select max(question_num) from question
+		where user_id = #{userId}
+	</select>
+	
+	<insert id = "optionInsert" parameterType="testSpringBoot.domain.OptionsDTO">
+		insert into OPTIONS (user_id, QUESTION_NUM, OPTION_NUM , OPTION_NAME)
+		values(#{userId}, #{questionNum}, #{optionNum}, #{optionName} )  
+	</insert>
+	
+	<select id="questionCount" resultType="int">
+		select count(QUESTION_NUM) from question
+		where user_id = '123456'
+	</select>
+	
+	<resultMap id = "questionOptionsMap" type = "testSpringBoot.domain.QuestionOptionDTO">
+		<association property="question" javaType="testSpringBoot.domain.QuestionDTO">
+			<id column = "user_id" jdbcType = "VARCHAR" property = "userId" />
+			<id column = "QUESTION_NUM" jdbcType = "BIGINT" property = "questionNum" />
+			<result column = "question_title" jdbcType ="VARCHAR" property = "questionTitle" />
+		</association>
+		<collection property ="options" ofType = "testSpringBoot.domain.OptionsDTO" >
+			<id column = "OPTION_NUM" jdbcType = "BIGINT" property = "optionNum" />
+			<result column = "OPTION_NAME" jdbcType = "VARCHAR" property = "optionName" />
+		</collection>
+	</resultMap>
+	
+	<select id = "surveySelectAll" resultMap = "questionOptionsMap" >
+		select q.user_id, q.QUESTION_NUM, question_title, OPTION_NUM, OPTION_NAME
+		from  question q, options o
+		where q.QUESTION_NUM = o.QUESTION_NUM(+) and q.user_id = '123456'	
+		and q.QUESTION_NUM = #{i}
+	</select>
+
+</mapper>
