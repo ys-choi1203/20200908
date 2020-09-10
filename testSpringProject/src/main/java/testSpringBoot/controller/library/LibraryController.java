@@ -19,6 +19,7 @@ import testSpringBoot.command.LibraryBoardCommand;
 import testSpringBoot.controller.FileDownLoad;
 import testSpringBoot.domain.FileName;
 import testSpringBoot.service.libraryBoard.FileDelService;
+import testSpringBoot.service.libraryBoard.LibBoardDeleteService;
 import testSpringBoot.service.libraryBoard.LibBoardModifyService;
 import testSpringBoot.service.libraryBoard.LibraryBoardDetailService;
 import testSpringBoot.service.libraryBoard.LibraryBoardListService;
@@ -39,6 +40,8 @@ public class LibraryController {
 	FileDelService fileDelService;
 	@Autowired
 	LibBoardModifyService libBoardModifyService;
+	@Autowired
+	LibBoardDeleteService libBoardDeleteService;
 	
 	// command객체가 필요한 곳에 model로 전달
 	@ModelAttribute
@@ -109,5 +112,21 @@ public class LibraryController {
 		String path = libBoardModifyService.libBoardModify(libraryBoardCommand, session, model);
 		
 		return path; 
+	}
+	
+	@RequestMapping("libBoardDel")
+	public String libBoardDel(@RequestParam(value = "boardNum") String boardNum,
+							Model model) {
+		model.addAttribute("boardNum", boardNum);
+		return "thymeleaf/lib_Board/lib_board_delete";
+	}
+	
+	@RequestMapping("libBoardDelPro")
+	public String libBoardDelPro(@RequestParam(value = "boardNum") String boardNum,
+								@RequestParam(value = "boardPass") String boardPass,
+								HttpSession session, Model model) throws Exception{
+		// 자료실 삭제와 비밀번호가 일치하는지 확인
+		String path = libBoardDeleteService.execute(boardNum, boardPass, session, model);
+		return path;
 	}
 }

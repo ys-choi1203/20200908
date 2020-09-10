@@ -77,4 +77,9 @@
 		set READ_COUNT = READ_COUNT + 1
 		where board_num = #{boardNum}
 	</update>
+	
+	<delete id="libraryDelete" parameterType="string">
+		delete from libraryboard
+		where board_num = #{boardNum}
+	</delete>
 </mapper>	
